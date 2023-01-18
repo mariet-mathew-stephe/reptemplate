@@ -1,14 +1,123 @@
 ---
-title: "Result"
-author: "Mariet"
-date: "The Date"
-output: output_format
+title: "Project Title"
+author: "Prepared by Oncology Outcomes"
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    fig_caption: yes
+  html_document:
+    toc: yes
+    df_print: paged
+  word_document:
+    toc: yes
+header-includes:
+- \usepackage{caption}
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+\newpage
+# Objective 1
+Describe the objectives
+
+Insert R codes for the objective of the project
+```{r  echo = FALSE, message = FALSE, warning = FALSE}
+
+#########################
+##### Load packages #####
+#########################
+
+# load the library used
+library(fst)
+
+###################
+##### Options #####
+###################
+
+ memory.limit(size=56000)
+knitr::opts_chunk$set(
+	echo = FALSE,
+	fig.height = 9,
+	fig.width = 6,
+	message = FALSE,
+	warning = FALSE
+)
+
+####################################
+##### Read-in and prepare data #####
+####################################
+
+# set working directory; your project folder
+# setwd("path")
+# df <- read_fst("file path.fst")
+
 ```
 
-## Introduction
+\newpage
 
-What we will b egingjfkg
+# Summary Tables
+Codes on how to represent summary tables/ descriptive tables
+```{r eval=FALSE, fig.align="c", message=FALSE, warning=FALSE, include=FALSE*}
+
+# load categorical variables to be summarized
+catvars <- df %>% select(SEX,TUMOR_STAGE) %>% colnames()
+
+# make categorical variables factors
+df_hr[catvars] <- lapply(df_hr[catvars], factor)
+
+# load all variables to be summarized
+vars <- df_hr %>% dplyr::select(SEX,AGE,TUMOR_STAGE) %>% colnames()
+
+tab1 <- CreateTableOne(vars=vars, factorVars= catvars, data=df_hr, includeNA=T, 
+                       addOverall = T)
+
+tab1b <- print(tab1, quote = FALSE, noSpaces = TRUE, 
+               printToggle = FALSE, 
+               varLabels=T, smd=T,dropEqual = T)
+
+# prepare table for printing
+tab1c <- tab1b %>% as.data.frame
+tab1c$var <- row.names(tab1b)
+
+# rename column names
+tab1c <- tab1c %>%
+  rename(Variable = var) %>%
+  dplyr::select(Variable, everything())
+row.names(tab1c) <- NULL
+
+# supress cell counts <10
+suppress10 <- function(x){
+  y = ifelse(as.numeric(str_extract(x, "^[0-9]+")) < 10, "<10", x) 
+  return(y)
+}
+
+# clean/ expand variable names
+tab1d <- tab1c %>% 
+   mutate_at(vars(Overall), ~suppress10(.))
+#  mutate(level = recode(level, 
+#                          "F" = "Female",
+#                          "M" = "Male"))
+
+# note: html removes preceeding spaces (we want to keep)
+# https://stackoverflow.com/questions/63946349/do-not-remove-spaces-in-kab# le-function-with-example
+
+# index of rows to indent
+tmp.ind1 <- 1:nrow(tab1d)
+tmp.ind2 <- substr(tab1d$Variable, 1, 3) == "   "
+tmp.ind3 <- tmp.ind1[tmp.ind2]
+
+tab1d %>%
+  kable(., "latex", longtable=T, booktabs=T,
+        caption="Baseline characteristics") %>%
+  kable_styling(latex_options=c("repeat_header", "HOLD_position")) %>%
+  add_indent(., tmp.ind3, level_of_indent = 1)
+  #landscape() 
+  #column_spec(1:5, width="2cm")
+
+```
+\newpage
+
+# Figures

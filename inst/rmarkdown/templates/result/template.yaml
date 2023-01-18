@@ -1,4 +1,4 @@
-name: Result
+name: Result_template
 description: >
-  A Template for Project Results
+  A RMD template for project result submission by Oncology Outcomes team
 create_dir: FALSE
