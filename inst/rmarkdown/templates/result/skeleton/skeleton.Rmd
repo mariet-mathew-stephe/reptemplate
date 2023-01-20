@@ -24,7 +24,7 @@ header-includes:
 Describe the objectives
 
 Insert R codes for the objective of the project
-```{r  echo = FALSE, message = FALSE, warning = FALSE}
+```{r  echo = FALSE, message = FALSE, warning = FALSE, include = FALSE}
 
 #########################
 ##### Load packages #####
@@ -120,4 +120,23 @@ tab1d %>%
 ```
 \newpage
 
-# Figures
+# Figures/ Survival plots
+```{r figure,fig.cap="Survival plot", echo = FALSE, message = FALSE, warning = FALSE}
+
+fit1 <- surv_fit(formula, data=df)
+  
+  
+fig1 <- ggsurvplot(fit2, 
+             title="plot.title",
+             conf.int=F, 
+             risk.table.height=0.5,
+            surv.median.line="hv", 
+             risk.table=T,
+             break.time.by=12,
+             xlab="Time (Months)",
+             legend="none",
+             pval=T)  
+print(fig1)
+  
+```
+See Figure \@ref(fig:figure) for survival plots.
