@@ -6,14 +6,16 @@ output:
   pdf_document:
     toc: yes
     number_sections: yes
-    fig_caption: yes
   html_document:
     toc: yes
     df_print: paged
   word_document:
     toc: yes
 header-includes:
+- \usepackage{floatrow}
+- \floatsetup[figure]{capposition=top}
 - \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
 - \usepackage{pdflscape}
 - \newcommand{\blandscape}{\begin{landscape}}
 - \newcommand{\elandscape}{\end{landscape}}
@@ -23,6 +25,7 @@ header-includes:
 # Objective 1
 Describe the objectives
 
+\newpage
 Insert R codes for the objective of the project
 ```{r  echo = FALSE, message = FALSE, warning = FALSE, include = FALSE}
 
@@ -57,7 +60,9 @@ knitr::opts_chunk$set(
 ```
 
 \newpage
+# Comments or decsription of results analyzed
 
+\newpage
 # Summary Tables
 Codes on how to represent summary tables/ descriptive tables
 ```{r eval=FALSE, fig.align="c", message=FALSE, warning=FALSE, include=FALSE*}
